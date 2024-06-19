@@ -36,14 +36,14 @@ export async function POST(request: Request) {
             success: false,
             message: "User already exist with this email.",
           },
-          { status: 500 }
+          { status: 400 }
         );
       } else {
         const hasedPassword = await bcrypt.hash(password, 10);
         existingUserByEmail.password = hasedPassword;
         existingUserByEmail.verifyCode = verifyCode;
-        existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000);
-
+        existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 3600000); // 1 hr expiry 
+        //Save user
         await existingUserByEmail.save();
       }
     } else {
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
     return Response.json(
       {
         success: false,
-        message: "Error registering user",
+        message: "Error registering user,Username already exist.",
       },
       {
         status: 500,
